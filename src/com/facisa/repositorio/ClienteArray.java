@@ -12,7 +12,11 @@ public class ClienteArray {
 		this.clienteList = new ArrayList<Cliente>();
 	}
 
-	public void Novo(Cliente cliente) {	
+	public void Novo(Cliente cliente) throws Exception {
+		
+		if (cliente.getNome().length() <= 3) {		
+			throw new Exception("Tem que ter mais do que 3 caracteres...");
+		}		
 		
 		clienteList.add(cliente);	
 		

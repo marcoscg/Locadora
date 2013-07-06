@@ -15,7 +15,7 @@ public class Fachada {
 		
 	}
 
-	public void NovoCliente(Cliente cliente) {		
+	public void NovoCliente(Cliente cliente) throws Exception {		
 		
 		clienteArray.Novo(cliente);		
 	}
