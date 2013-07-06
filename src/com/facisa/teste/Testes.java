@@ -9,6 +9,7 @@ public class Testes {
 
 	@Before
 	public void setUp() throws Exception {
+		fail("Teste");
 	}
 
 	@Test
