@@ -3,6 +3,7 @@ package com.facisa.repositorio;
 import java.util.ArrayList;
 
 import com.facisa.entidade.Cliente;
+import com.facisa.util.ValidaCPF;
 
 public class ClienteArray {
 	
@@ -14,8 +15,14 @@ public class ClienteArray {
 
 	public void Novo(Cliente cliente) throws Exception {
 		
-		if (cliente.getNome().length() <= 3) {		
-			throw new Exception("Tem que ter mais do que 3 caracteres...");
+		ValidaCPF cpf = new ValidaCPF();
+		
+		if (!cpf.isCPF(cliente.getCpf())) {
+			throw new Exception("CPF inválido!");	
+		}
+		
+		if (cliente.getNome().equals("")) {		
+			throw new Exception("Nome não pode ser vazio!");
 		}		
 		
 		clienteList.add(cliente);	

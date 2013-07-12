@@ -20,12 +20,6 @@ public class Fachada {
 		clienteArray.Novo(cliente);		
 	}
 	
-	public int TamanhoCliente() {
-		
-		return clienteArray.Tamanho();
-		
-	}
-	
 	public ArrayList<Cliente> ListaCliente() {
 		
 		return clienteArray.Listar();
