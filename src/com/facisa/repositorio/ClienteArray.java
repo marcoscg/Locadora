@@ -7,10 +7,21 @@ import com.facisa.util.ValidaCPF;
 
 public class ClienteArray {
 	
-	private ArrayList<Cliente> clienteList;		
+	private static ClienteArray instance;
 	
-	public ClienteArray() {
+	private ArrayList<Cliente> clienteList;	
+	
+	private ClienteArray() {
 		this.clienteList = new ArrayList<Cliente>();
+	}
+	
+	public static ClienteArray getInstance() {
+		
+		if (instance == null) {
+			instance = new ClienteArray();
+		}
+		
+		return instance;
 	}
 
 	public void Novo(Cliente cliente) throws Exception {
@@ -25,15 +36,26 @@ public class ClienteArray {
 			throw new Exception("Nome não pode ser vazio!");
 		}		
 		
-		clienteList.add(cliente);	
+		clienteList.add(cliente);
 		
 	}
 	
-	public int Tamanho() {
+	public void Excluir(Cliente cliente) throws Exception {
 		
-		return clienteList.size();
+		int index = clienteList.indexOf(cliente);
 		
+		if (index == -1) {
+			throw new Exception("Cliente não encontrado!");
+		}		
+		
+		clienteList.remove(index);		
 	}
+	
+	public void ExcluirTudo() {
+		
+		clienteList.removeAll(clienteList);
+		
+	}	
 	
 	public ArrayList<Cliente> Listar() {
 		

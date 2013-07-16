@@ -7,7 +7,7 @@ public class ValidaCPF {
 	    int iDigito1 = 0, iDigito2 = 0, iRestoDivisao = 0;
 	    String strDigitoVerificador, strDigitoResultado;
 	 
-	    if (!strCpf.substring(0,1).equals("")){
+	    if (!strCpf.equals("")){
 	        try{
 	            strCpf = strCpf.replace('.',' ');
 	            strCpf = strCpf.replace('-',' ');

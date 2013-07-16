@@ -3,28 +3,47 @@ package com.facisa.fachada;
 import java.util.ArrayList;
 
 import com.facisa.entidade.Cliente;
+import com.facisa.entidade.Filme;
 import com.facisa.repositorio.ClienteArray;
+import com.facisa.repositorio.FilmeArray;
 
 public class Fachada {
 	
-	private ClienteArray clienteArray;
+	public void NovoCliente(Cliente cliente) throws Exception {		
+		ClienteArray.getInstance().Novo(cliente);		
+	}
 	
-	public Fachada() {
-		
-		this.clienteArray = new ClienteArray();
-		
+	public ArrayList<Cliente> ListaCliente() {		
+		return ClienteArray.getInstance().Listar();		
 	}
 
-	public void NovoCliente(Cliente cliente) throws Exception {		
+	public void ExcluirCliente(Cliente cliente) throws Exception {
+		ClienteArray.getInstance().Excluir(cliente);
 		
-		clienteArray.Novo(cliente);		
 	}
 	
-	public ArrayList<Cliente> ListaCliente() {
-		
-		return clienteArray.Listar();
+	public void ExcluirTodoCliente() {
+		ClienteArray.getInstance().ExcluirTudo();
 		
 	}
+	
+	public void NovoFilme(Filme filme) throws Exception {		
+		FilmeArray.getInstance().Novo(filme);		
+	}
+	
+	public ArrayList<Filme> ListaFilme() {		
+		return FilmeArray.getInstance().Listar();		
+	}
+
+	public void ExcluirFilme(Filme filme) throws Exception {
+		FilmeArray.getInstance().Excluir(filme);
+		
+	}
+	
+	public void ExcluirTodoFilme() {
+		FilmeArray.getInstance().ExcluirTudo();
+		
+	}	
 	
 	
 
