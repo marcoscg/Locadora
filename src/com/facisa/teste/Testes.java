@@ -3,6 +3,7 @@ package com.facisa.teste;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -10,6 +11,7 @@ import org.junit.Test;
 import com.facisa.entidade.Cliente;
 import com.facisa.entidade.Endereco;
 import com.facisa.entidade.Filme;
+import com.facisa.entidade.Locacao;
 import com.facisa.fachada.Fachada;
 import com.facisa.util.TipoEnum;
 import com.facisa.util.ValidaCPF;
@@ -24,6 +26,7 @@ public class Testes {
 		
 		fachada.ExcluirTodoCliente();
 		fachada.ExcluirTodoFilme();
+		fachada.ExcluirTodaLocacao();
 	}
 	
 	@Test
@@ -255,6 +258,107 @@ public class Testes {
 		
 	}	
 	
+	@Test
+	public void testUmaNovaLocacao() throws Exception {		
+		
+		ArrayList<Filme> filmes = new ArrayList<Filme>();
+		filmes.add(filmeDVDPadrao());
+		filmes.add(filmeBLURAYPadrao());		
+		
+		Locacao locacao = new Locacao();
+		locacao.setCodigo(1);
+		locacao.setCliente(clientePadrao());	
+		locacao.setFilmes(filmes);
+		locacao.setDtLocacao(Calendar.getInstance().getTime());
+		locacao.setValor(10.00);
+
+		this.fachada.NovaLocacao(locacao);
+		
+		ArrayList<Locacao> locacoes = fachada.ListaLocacao();
+		
+		assertEquals(1, locacoes.size());
+		assertEquals(locacao, locacoes.get(0));		
+	}
+	
+	@Test
+	public void testExcluirLocacao() throws Exception {		
+		
+		ArrayList<Filme> filmes = new ArrayList<Filme>();
+		filmes.add(filmeDVDPadrao());
+		filmes.add(filmeBLURAYPadrao());		
+		
+		Locacao locacao = new Locacao();
+		locacao.setCodigo(1);
+		locacao.setCliente(clientePadrao());	
+		locacao.setFilmes(filmes);
+		locacao.setDtLocacao(Calendar.getInstance().getTime());
+		locacao.setValor(10.00);
+
+		this.fachada.NovaLocacao(locacao);
+		
+		ArrayList<Locacao> locacoes = fachada.ListaLocacao();
+		
+		assertEquals(1, locacoes.size());
+		assertEquals(locacao, locacoes.get(0));	
+		
+		this.fachada.ExcluirLocacao(locacao);
+		
+		locacoes = fachada.ListaLocacao();
+		
+		assertEquals(0, locacoes.size());		
+	}
+	
+	@Test(expected=Exception.class)
+	public void testLocacaoSemCliente() throws Exception {
+		
+		Locacao locacao = new Locacao();
+		locacao.setCodigo(1);
+		
+		this.fachada.NovaLocacao(locacao);
+		
+	}
+	
+	@Test(expected=Exception.class)
+	public void testLocacaoSemFilme() throws Exception {
+		
+		Locacao locacao = new Locacao();
+		locacao.setCodigo(1);
+		locacao.setCliente(clientePadrao());		
+		
+		this.fachada.NovaLocacao(locacao);		
+	}
+	
+	@Test(expected=Exception.class)
+	public void testLocacaoSemData() throws Exception {
+		
+		ArrayList<Filme> filmes = new ArrayList<Filme>();
+		filmes.add(filmeDVDPadrao());
+		filmes.add(filmeBLURAYPadrao());		
+		
+		Locacao locacao = new Locacao();
+		locacao.setCodigo(1);
+		locacao.setCliente(clientePadrao());
+		locacao.setFilmes(filmes);		
+		
+		this.fachada.NovaLocacao(locacao);		
+	}	
+	
+	@Test(expected=Exception.class)
+	public void testLocacaoSemValor() throws Exception {
+		
+		ArrayList<Filme> filmes = new ArrayList<Filme>();
+		filmes.add(filmeDVDPadrao());
+		filmes.add(filmeBLURAYPadrao());		
+		
+		Locacao locacao = new Locacao();
+		locacao.setCodigo(1);
+		locacao.setCliente(clientePadrao());
+		locacao.setFilmes(filmes);
+		locacao.setDtLocacao(Calendar.getInstance().getTime());
+		
+		this.fachada.NovaLocacao(locacao);		
+	}	
+	
 	public Endereco enderecoPadrao() {		
 		Endereco endereco = new Endereco();
 		
@@ -268,5 +372,41 @@ public class Testes {
 		
 		return endereco;		
 	}
+	
+	public Cliente clientePadrao() {
+		
+		Cliente cliente = new Cliente();
+		cliente.setCpf("63356030124");
+		cliente.setNome("Marcos Guimaraes");
+		cliente.setEndereco(enderecoPadrao());
+		
+		return cliente;
+	}
+	
+	public Filme filmeDVDPadrao() {
+		
+		Filme filme = new Filme();
+		filme.setCodigo(1);
+		filme.setTitulo("Filme 1");
+		filme.setGenero("Ação");
+		filme.setAno(2013);
+		filme.setTipo(TipoEnum.DVD);
+		
+		return filme;		
+		
+	}
+	
+	public Filme filmeBLURAYPadrao() {
+		
+		Filme filme = new Filme();
+		filme.setCodigo(2);
+		filme.setTitulo("Filme 2");
+		filme.setGenero("Comedia");
+		filme.setAno(2011);
+		filme.setTipo(TipoEnum.BLU_RAY);
+		
+		return filme;		
+		
+	}	
 
 }
