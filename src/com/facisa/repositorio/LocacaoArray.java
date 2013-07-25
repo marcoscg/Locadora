@@ -2,8 +2,6 @@ package com.facisa.repositorio;
 
 import java.util.ArrayList;
 
-import org.hamcrest.core.IsNull;
-
 import com.facisa.entidade.Locacao;
 
 public class LocacaoArray {
