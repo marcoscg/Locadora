@@ -42,7 +42,7 @@ public class Main {
 		Controle controle = new Controle();
 		
 		controle.execute(cmdnovocliente);
-		controle.execute(cmdexclircliente);
+		//controle.execute(cmdexclircliente);
 		//controle.execute(cmdexclirtudocliente);
 		
 		ArrayList<Cliente> clientes = fachada.ListaCliente();
@@ -56,7 +56,7 @@ public class Main {
 		Command cmdexcluirfilme = new ExcluirFilmeCommand(fachada, filme);
 		
 		controle.execute(cmdnovofilme);
-		controle.execute(cmdexcluirfilme);
+		//controle.execute(cmdexcluirfilme);
 		
 		ArrayList<Filme> filmes = fachada.ListaFilme();
 		
@@ -79,7 +79,7 @@ public class Main {
 		Command cmdexcluirlocacao = new ExcluirLocacaoCommand(fachada, locacao);
 		
 		controle.execute(cmdnovalocacao);
-		controle.execute(cmdexcluirlocacao);
+		//controle.execute(cmdexcluirlocacao);
 		
 		ArrayList<Locacao> locacoes = fachada.ListaLocacao();
 		

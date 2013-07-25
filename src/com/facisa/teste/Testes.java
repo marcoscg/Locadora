@@ -8,6 +8,17 @@ import java.util.Calendar;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.facisa.Command.Command;
+import com.facisa.Command.ExcluirClienteCommand;
+import com.facisa.Command.ExcluirFilmeCommand;
+import com.facisa.Command.ExcluirLocacaoCommand;
+import com.facisa.Command.ExcluirTudoClienteCommand;
+import com.facisa.Command.ExcluirTudoFilmeCommand;
+import com.facisa.Command.ExcluirTudoLocacaoCommand;
+import com.facisa.Command.NovaLocacaoCommand;
+import com.facisa.Command.NovoClienteCommand;
+import com.facisa.Command.NovoFilmeCommand;
+import com.facisa.Controle.Controle;
 import com.facisa.entidade.Cliente;
 import com.facisa.entidade.Endereco;
 import com.facisa.entidade.Filme;
@@ -19,14 +30,20 @@ import com.facisa.util.ValidaCPF;
 public class Testes {
 
 	private Fachada fachada;
+	private Controle controle;
 	
 	@Before
 	public void setUp() throws Exception {
-		this.fachada = new Fachada();		
+		this.fachada = new Fachada();	
+		this.controle = new Controle();
 		
-		fachada.ExcluirTodoCliente();
-		fachada.ExcluirTodoFilme();
-		fachada.ExcluirTodaLocacao();
+		Command cmdexclirtudocliente = new ExcluirTudoClienteCommand(fachada);
+		Command cmdexclirtudoFilme = new ExcluirTudoFilmeCommand(fachada);
+		Command cmdexclirtudoLocacao = new ExcluirTudoLocacaoCommand(fachada);
+		
+		controle.execute(cmdexclirtudocliente);
+		controle.execute(cmdexclirtudoFilme);
+		controle.execute(cmdexclirtudoLocacao);
 	}
 	
 	@Test
@@ -60,7 +77,8 @@ public class Testes {
 		cliente.setNome("Marcos Guimaraes");
 		cliente.setEndereco(enderecoPadrao());
 		
-		this.fachada.NovoCliente(cliente);
+		Command cmdnovocliente = new NovoClienteCommand(fachada, cliente);
+		controle.execute(cmdnovocliente);
 		
 		ArrayList<Cliente> clientes = fachada.ListaCliente();
 		
@@ -80,8 +98,11 @@ public class Testes {
 		cliente1.setNome("Daniel Pereira");	
 		cliente1.setEndereco(enderecoPadrao());
 		
-		fachada.NovoCliente(cliente);	
-		fachada.NovoCliente(cliente1);
+		Command cmdnovocliente = new NovoClienteCommand(fachada, cliente);
+		Command cmdnovocliente1 = new NovoClienteCommand(fachada, cliente1);
+		
+		controle.execute(cmdnovocliente);	
+		controle.execute(cmdnovocliente1);
 		
 		ArrayList<Cliente> clientes = fachada.ListaCliente();
 		
@@ -108,19 +129,26 @@ public class Testes {
 		cliente2.setNome("Roberto Silva");
 		cliente2.setEndereco(enderecoPadrao());
 		
-		fachada.NovoCliente(cliente);
-		fachada.NovoCliente(cliente1);
-		fachada.NovoCliente(cliente2);
+		Command cmdnovocliente = new NovoClienteCommand(fachada, cliente);
+		Command cmdnovocliente1 = new NovoClienteCommand(fachada, cliente1);
+		Command cmdnovocliente2 = new NovoClienteCommand(fachada, cliente2);
+		
+		controle.execute(cmdnovocliente);	
+		controle.execute(cmdnovocliente1);
+		controle.execute(cmdnovocliente2);
 		
 		ArrayList<Cliente> clientes = fachada.ListaCliente();
 		
 		assertEquals(3, clientes.size());
 		assertEquals(cliente, clientes.get(0));
 		assertEquals(cliente1, clientes.get(1));
-		assertEquals(cliente2, clientes.get(2));		
+		assertEquals(cliente2, clientes.get(2));
 		
-		fachada.ExcluirCliente(cliente);
-		fachada.ExcluirCliente(cliente2);
+		Command cmdexclircliente = new ExcluirClienteCommand(fachada, cliente);
+		Command cmdexclircliente2 = new ExcluirClienteCommand(fachada, cliente2);
+		
+		controle.execute(cmdexclircliente);	
+		controle.execute(cmdexclircliente2);
 		
 		clientes = fachada.ListaCliente();
 		
@@ -146,18 +174,24 @@ public class Testes {
 		cliente2.setNome("Roberto Silva");
 		cliente2.setEndereco(enderecoPadrao());		
 		
-		fachada.NovoCliente(cliente);
-		fachada.NovoCliente(cliente1);
-		fachada.NovoCliente(cliente2);
+		Command cmdnovocliente = new NovoClienteCommand(fachada, cliente);
+		Command cmdnovocliente1 = new NovoClienteCommand(fachada, cliente1);
+		Command cmdnovocliente2 = new NovoClienteCommand(fachada, cliente2);
+		
+		controle.execute(cmdnovocliente);	
+		controle.execute(cmdnovocliente1);
+		controle.execute(cmdnovocliente2);
 		
 		ArrayList<Cliente> clientes = fachada.ListaCliente();
 		
 		assertEquals(3, clientes.size());
 		assertEquals(cliente, clientes.get(0));
 		assertEquals(cliente1, clientes.get(1));
-		assertEquals(cliente2, clientes.get(2));		
+		assertEquals(cliente2, clientes.get(2));
 		
-		fachada.ExcluirTodoCliente();
+		Command cmdexclirtudocliente = new ExcluirTudoClienteCommand(fachada);
+		
+		controle.execute(cmdexclirtudocliente);
 		
 		clientes = fachada.ListaCliente();
 		
@@ -165,14 +199,23 @@ public class Testes {
 	}
 	
 	@Test(expected=Exception.class)
+	public void testCPFVazio() throws Exception {
+		
+		Cliente cliente = new Cliente();
+		cliente.setCpf("");
+		cliente.setNome("Marcos");
+		
+		fachada.NovoCliente(cliente);		
+	}	
+	
+	@Test(expected=Exception.class)
 	public void testNomeVazio() throws Exception {
 		
 		Cliente cliente = new Cliente();
 		cliente.setCpf("63356030124");
-		cliente.setNome("");	
+		cliente.setNome("");
 		
-		fachada.NovoCliente(cliente);
-		
+		fachada.NovoCliente(cliente);		
 	}	
 	
 	@Test(expected=Exception.class)
@@ -195,14 +238,11 @@ public class Testes {
 	@Test
 	public void testUmNovoFilme() throws Exception {		
 		
-		Filme filme = new Filme();
-		filme.setCodigo(1);
-		filme.setTitulo("Filme 1");
-		filme.setGenero("Ação");
-		filme.setAno(2013);
-		filme.setTipo(TipoEnum.DVD);		
-
-		this.fachada.NovoFilme(filme);
+		Filme filme = filmeDVDPadrao();	
+		
+		Command cmdnovofilme = new NovoFilmeCommand(fachada, filme);
+		
+		controle.execute(cmdnovofilme);
 		
 		ArrayList<Filme> filmes = fachada.ListaFilme();
 		
@@ -213,21 +253,20 @@ public class Testes {
 	@Test
 	public void testExcluirFilme() throws Exception {		
 		
-		Filme filme = new Filme();
-		filme.setCodigo(1);
-		filme.setTitulo("Filme 1");
-		filme.setGenero("Ação");
-		filme.setAno(2013);
-		filme.setTipo(TipoEnum.DVD);		
+		Filme filme = filmeDVDPadrao();		
 
-		this.fachada.NovoFilme(filme);
+		Command cmdnovofilme = new NovoFilmeCommand(fachada, filme);
+		
+		controle.execute(cmdnovofilme);
 		
 		ArrayList<Filme> filmes = fachada.ListaFilme();
 		
 		assertEquals(1, filmes.size());
 		assertEquals(filme, filmes.get(0));
 		
-		this.fachada.ExcluirFilme(filme);
+		Command cmdexcluirfilme = new ExcluirFilmeCommand(fachada, filme);
+		
+		controle.execute(cmdexcluirfilme);
 		
 		filmes = fachada.ListaFilme();
 		
@@ -236,21 +275,23 @@ public class Testes {
 	}
 	
 	@Test(expected=Exception.class)
-	public void testFilmeNaoExiste() throws Exception {
+	public void testSemCodigoFilme() throws Exception {
 		
 		Filme filme = new Filme();
-		filme.setCodigo(1);
 		filme.setTitulo("Filme 1");
 		filme.setGenero("Ação");
 		filme.setAno(2013);
 		filme.setTipo(TipoEnum.DVD);
 		
-		Filme filme1 = new Filme();
-		filme1.setCodigo(1);
-		filme1.setTitulo("Filme 2");
-		filme1.setGenero("Comedia");
-		filme1.setAno(2013);
-		filme1.setTipo(TipoEnum.BLU_RAY);		
+		fachada.NovoFilme(filme);		
+	}	
+	
+	@Test(expected=Exception.class)
+	public void testFilmeNaoExiste() throws Exception {
+		
+		Filme filme = filmeDVDPadrao();
+		
+		Filme filme1 = filmeBLURAYPadrao();
 
 		fachada.NovoFilme(filme);
 		
@@ -271,8 +312,10 @@ public class Testes {
 		locacao.setFilmes(filmes);
 		locacao.setDtLocacao(Calendar.getInstance().getTime());
 		locacao.setValor(10.00);
-
-		this.fachada.NovaLocacao(locacao);
+		
+		Command cmdnovalocacao = new NovaLocacaoCommand(fachada, locacao);
+		
+		controle.execute(cmdnovalocacao);
 		
 		ArrayList<Locacao> locacoes = fachada.ListaLocacao();
 		
@@ -294,14 +337,18 @@ public class Testes {
 		locacao.setDtLocacao(Calendar.getInstance().getTime());
 		locacao.setValor(10.00);
 
-		this.fachada.NovaLocacao(locacao);
+		Command cmdnovalocacao = new NovaLocacaoCommand(fachada, locacao);
+		
+		controle.execute(cmdnovalocacao);
 		
 		ArrayList<Locacao> locacoes = fachada.ListaLocacao();
 		
 		assertEquals(1, locacoes.size());
 		assertEquals(locacao, locacoes.get(0));	
 		
-		this.fachada.ExcluirLocacao(locacao);
+		Command cmdexcluirlocacao = new ExcluirLocacaoCommand(fachada, locacao);
+		
+		controle.execute(cmdexcluirlocacao);
 		
 		locacoes = fachada.ListaLocacao();
 		

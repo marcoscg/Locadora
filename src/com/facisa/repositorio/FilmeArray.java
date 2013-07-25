@@ -25,6 +25,10 @@ public class FilmeArray {
 
 	public void Novo(Filme filme) throws Exception {
 		
+		if (filme.getCodigo() == 0) {		
+			throw new Exception("Filme sem código!");
+		}		
+		
 		filmeList.add(filme);
 		
 	}
